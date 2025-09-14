@@ -83,7 +83,7 @@ if(email!==req.decoded.email){
   return res.status(403).send({message:"forbidden access"})
 }
 const query={email:email};
-const uder=await userCollection.findOne(query);
+const user=await userCollection.findOne(query);
 let admin=false;
 if(user){
   admin=user?.role=='admin';
@@ -129,6 +129,13 @@ app.delete('/users/:id',verifyToken,verifyAdmin,async(req,res)=>{
 app.get('/menu',async(req,res)=>{
     const result=await menuCollection.find().toArray();
     res.send(result);
+});
+
+app.post('/menu',verifyToken,verifyAdmin,async(req,res)=>{
+  const item=req.body;
+  const result=await menuCollection.insertOne(item);
+  res.send(result);
+
 })
 
 app.get('/review',async(req,res)=>{
